@@ -873,7 +873,7 @@ const safeProviders: SafeProvider[] = [
       REFRESH_ACCESS_TOKEN_ERROR_CALLBACK,
       LogService,
       LOGOUT_CALLBACK,
-      VaultTimeoutSettingsService,
+      // HACK: this causes a circular dep, temporarily remove to get this working
       AccountService,
       HTTP_OPERATIONS,
     ],
@@ -1181,7 +1181,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: InternalPolicyService,
     useClass: DefaultPolicyService,
-    deps: [StateProvider, OrganizationServiceAbstraction, AccountServiceAbstraction],
+    deps: [StateProvider, OrganizationServiceAbstraction, AccountServiceAbstraction, SdkService],
   }),
   safeProvider({
     provide: PolicyServiceAbstraction,
