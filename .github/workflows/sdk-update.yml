@@ -1,6 +1,8 @@
 name: SDK Update
 run-name: "SDK ${{ inputs.run-mode }} - ${{ inputs.base-branch }} @ ${{ inputs.sdk-version }}"
 
+permissions: {}
+
 on:
   workflow_dispatch:
     inputs:

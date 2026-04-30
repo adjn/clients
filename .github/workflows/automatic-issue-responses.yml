@@ -1,4 +1,7 @@
 name: Automatic issue responses
+
+permissions: {}
+
 on:
   issues:
     types:

@@ -1,5 +1,7 @@
 name: Auto-reply to Discussions
 
+permissions: {}
+
 on:
   discussion:
     types: created
