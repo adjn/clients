@@ -24,7 +24,7 @@ permissions: {}
 jobs:
   cherry-pick:
     name: Cherry Pick
-    uses: bitwarden/gh-actions/.github/workflows/_cherry-pick.yml@main
+    uses: bitwarden/gh-actions/.github/workflows/_cherry-pick.yml@bf687f1106a40cc778516d5fe23a5df7b283baf2
     with:
       source_pr: ${{ inputs.source_pr }}
       dest_branch: ${{ inputs.dest_branch }}

@@ -1,4 +1,7 @@
 name: Automatic pull request responses
+
+permissions: {}
+
 on:
   pull_request:
     types:

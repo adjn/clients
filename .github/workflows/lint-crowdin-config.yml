@@ -1,5 +1,7 @@
 name: Lint Crowdin Config
 
+permissions: {}
+
 on:
   pull_request:
     types: [opened, synchronize]
@@ -28,7 +30,7 @@ jobs:
           persist-credentials: false
 
       - name: Log in to Azure
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -36,13 +38,13 @@ jobs:
 
       - name: Retrieve secrets
         id: retrieve-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: "bitwarden-ci"
           secrets: "crowdin-api-token"
 
       - name: Log out from Azure
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Lint ${{ matrix.app.name }} config
         uses: crowdin/github-action@8818ff65bfc4322384f983ea37e3926948c11745 # v2.15.0

@@ -1,6 +1,8 @@
 name: Publish Web
 run-name: Publish Web ${{ inputs.publish_type }}
 
+permissions: {}
+
 on:
   workflow_dispatch:
     inputs:
@@ -45,7 +47,7 @@ jobs:
 
       - name: Check Release Version
         id: version
-        uses: bitwarden/gh-actions/release-version-check@main
+        uses: bitwarden/gh-actions/release-version-check@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           release-type: ${{ inputs.publish_type }}
           project-type: ts
@@ -82,7 +84,7 @@ jobs:
 
       ########## ACR ##########
       - name: Log in to Azure
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -132,7 +134,7 @@ jobs:
           fi
 
       - name: Log out from Azure
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Update deployment status to Success
         if: ${{ inputs.publish_type != 'Dry Run' && success() }}
@@ -165,7 +167,7 @@ jobs:
       id-token: write
     steps:
       - name: Log in to Azure
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -173,13 +175,13 @@ jobs:
 
       - name: Get Azure Key Vault secrets
         id: get-kv-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: gh-org-bitwarden
           secrets: "BW-GHAPP-ID,BW-GHAPP-KEY"
 
       - name: Log out from Azure
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Generate GH App token
         uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1

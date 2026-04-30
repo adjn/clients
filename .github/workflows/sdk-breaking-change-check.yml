@@ -37,17 +37,28 @@ jobs:
       _SDK_VERSION: ${{ github.event.inputs.sdk_version }}
       _ARTIFACTS_RUN_ID: ${{ github.event.inputs.artifacts_run_id }}
       _ARTIFACT_NAME: ${{ github.event.inputs.artifact_name }}
-      
+
     steps:
+      - name: Validate source repository
+        run: |
+          case "$_SOURCE_REPO" in
+            bitwarden/sdk-internal|bitwarden/sdk-internal-commercial)
+              ;;
+            *)
+              echo "::error::Unexpected source_repo: $_SOURCE_REPO"
+              exit 1
+              ;;
+          esac
+
       - name: Log in to Azure
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           client_id: ${{ secrets.AZURE_CLIENT_ID }}
       - name: Get Azure Key Vault secrets
         id: get-kv-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: gh-org-bitwarden
           secrets: "BW-GHAPP-ID,BW-GHAPP-KEY"
@@ -61,7 +72,7 @@ jobs:
           permission-actions: read # for reading and downloading the artifacts for a workflow run
 
       - name: Log out from Azure
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Check out clients repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -107,7 +118,7 @@ jobs:
           fi
 
       - name: Download SDK artifacts
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           github_token: ${{ steps.app-token.outputs.token }}
           workflow: build-wasm-internal.yml

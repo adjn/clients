@@ -61,7 +61,6 @@ jobs:
 
   bump_version:
     name: Bump Version
-    if: ${{ always() }}
     runs-on: ubuntu-24.04
     needs: setup
     outputs:
@@ -76,12 +75,12 @@ jobs:
     steps:
       - name: Validate version input format
         if: ${{ inputs.version_number_override != '' }}
-        uses: bitwarden/gh-actions/version-check@main
+        uses: bitwarden/gh-actions/version-check@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           version: ${{ inputs.version_number_override }}
 
       - name: Log in to Azure
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -89,20 +88,20 @@ jobs:
 
       - name: Get Azure Key Vault secrets
         id: get-kv-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: gh-org-bitwarden
           secrets: "BW-GHAPP-ID,BW-GHAPP-KEY"
 
       - name: Retrieve GPG secrets
         id: retrieve-gpg-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: "bitwarden-ci"
           secrets: "github-gpg-private-key, github-gpg-private-key-passphrase"
 
       - name: Log out from Azure
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Generate GH App token
         uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
@@ -173,7 +172,7 @@ jobs:
       - name: Calculate next Browser release version
         if: ${{ inputs.bump_browser == true && inputs.version_number_override == '' }}
         id: calculate-next-browser-version
-        uses: bitwarden/gh-actions/version-next@main
+        uses: bitwarden/gh-actions/version-next@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           version: ${{ steps.current-browser-version.outputs.version }}
 
@@ -193,28 +192,28 @@ jobs:
 
       - name: Bump Browser Version - Manifest - Version Override
         if: ${{ inputs.bump_browser == true && inputs.version_number_override != '' }}
-        uses: bitwarden/gh-actions/version-bump@main
+        uses: bitwarden/gh-actions/version-bump@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           file_path: "apps/browser/src/manifest.json"
           version: ${{ inputs.version_number_override }}
 
       - name: Bump Browser Version - Manifest - Automatic Calculation
         if: ${{ inputs.bump_browser == true && inputs.version_number_override == '' }}
-        uses: bitwarden/gh-actions/version-bump@main
+        uses: bitwarden/gh-actions/version-bump@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           file_path: "apps/browser/src/manifest.json"
           version: ${{ steps.calculate-next-browser-version.outputs.version }}
 
       - name: Bump Browser Version - Manifest v3 - Version Override
         if: ${{ inputs.bump_browser == true && inputs.version_number_override != '' }}
-        uses: bitwarden/gh-actions/version-bump@main
+        uses: bitwarden/gh-actions/version-bump@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           file_path: "apps/browser/src/manifest.v3.json"
           version: ${{ inputs.version_number_override }}
 
       - name: Bump Browser Version - Manifest v3 - Automatic Calculation
         if: ${{ inputs.bump_browser == true && inputs.version_number_override == '' }}
-        uses: bitwarden/gh-actions/version-bump@main
+        uses: bitwarden/gh-actions/version-bump@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           file_path: "apps/browser/src/manifest.v3.json"
           version: ${{ steps.calculate-next-browser-version.outputs.version }}
@@ -259,7 +258,7 @@ jobs:
       - name: Calculate next CLI release version
         if: ${{ inputs.bump_cli == true && inputs.version_number_override == '' }}
         id: calculate-next-cli-version
-        uses: bitwarden/gh-actions/version-next@main
+        uses: bitwarden/gh-actions/version-next@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           version: ${{ steps.current-cli-version.outputs.version }}
 
@@ -310,7 +309,7 @@ jobs:
       - name: Calculate next Desktop release version
         if: ${{ inputs.bump_desktop == true && inputs.version_number_override == '' }}
         id: calculate-next-desktop-version
-        uses: bitwarden/gh-actions/version-next@main
+        uses: bitwarden/gh-actions/version-next@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           version: ${{ steps.current-desktop-version.outputs.version }}
 
@@ -375,7 +374,7 @@ jobs:
       - name: Calculate next Web release version
         if: ${{ inputs.bump_web == true && inputs.version_number_override == '' }}
         id: calculate-next-web-version
-        uses: bitwarden/gh-actions/version-next@main
+        uses: bitwarden/gh-actions/version-next@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           version: ${{ steps.current-web-version.outputs.version }}
 
@@ -468,7 +467,7 @@ jobs:
 
     steps:
       - name: Log in to Azure
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -476,13 +475,13 @@ jobs:
 
       - name: Get Azure Key Vault secrets
         id: get-kv-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: gh-org-bitwarden
           secrets: "BW-GHAPP-ID,BW-GHAPP-KEY"
 
       - name: Log out from Azure
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Generate GH App token
         uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1

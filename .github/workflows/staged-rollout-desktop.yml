@@ -1,6 +1,8 @@
 name: Staged Rollout Desktop
 run-name: Staged Rollout Desktop - ${{ inputs.rollout_percentage }}%
 
+permissions: {}
+
 on:
   workflow_dispatch:
     inputs:
@@ -22,7 +24,7 @@ jobs:
       id-token: write
     steps:
       - name: Log in to Azure
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -30,7 +32,7 @@ jobs:
 
       - name: Retrieve secrets
         id: retrieve-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: "bitwarden-ci"
           secrets: "aws-electron-access-id,
@@ -38,7 +40,7 @@ jobs:
             aws-electron-bucket-name"
 
       - name: Log out from Azure
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Download channel update info files from S3
         env:
@@ -58,6 +60,11 @@ jobs:
         env:
           NEW_PCT: ${{ github.event.inputs.rollout_percentage }}
         run: |
+          if [[ ! "$NEW_PCT" =~ ^[0-9]+$ ]] || [ "$NEW_PCT" -lt 1 ] || [ "$NEW_PCT" -gt 100 ]; then
+            echo "New percentage (${NEW_PCT}) must be an integer between 1 and 100."
+            exit 1
+          fi
+
           CURRENT_PCT=$(sed -r -n "s/stagingPercentage:\s([0-9]+)/\1/p" latest.yml)
           echo "Current percentage: ${CURRENT_PCT}"
           echo "New percentage: ${NEW_PCT}"

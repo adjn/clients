@@ -1,6 +1,8 @@
 name: SDK Update
 run-name: "SDK ${{ inputs.run-mode }} - ${{ inputs.base-branch }} @ ${{ inputs.sdk-version }}"
 
+permissions: {}
+
 on:
   workflow_dispatch:
     inputs:
@@ -41,7 +43,7 @@ jobs:
 
     steps:
       - name: Log in to Azure
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -49,13 +51,13 @@ jobs:
 
       - name: Get Azure Key Vault secrets
         id: get-kv-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: gh-org-bitwarden
           secrets: "BW-GHAPP-ID,BW-GHAPP-KEY"
 
       - name: Log out from Azure
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Generate GH App token
         uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0

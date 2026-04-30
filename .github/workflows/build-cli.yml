@@ -81,7 +81,7 @@ jobs:
       - name: Check secrets
         id: check-secrets
         run: |
-          has_secrets=${{ secrets.AZURE_CLIENT_ID != '' }}
+          has_secrets=${{ secrets.AZURE_CLIENT_ID != '' && !(github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository) }}
           echo "has_secrets=$has_secrets" >> "$GITHUB_OUTPUT"
 
 
@@ -147,7 +147,7 @@ jobs:
 
       - name: Download SDK Artifacts
         if: ${{ inputs.sdk_branch != '' && needs.setup.outputs.has_secrets == 'true' && matrix.license_type.type != 'commercial' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build-wasm-internal.yml
@@ -167,7 +167,7 @@ jobs:
 
       - name: Download Commercial SDK Artifacts
         if: ${{ inputs.sdk_branch != '' && needs.setup.outputs.has_secrets == 'true' && matrix.license_type.type == 'commercial' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build-wasm-internal.yml
@@ -191,7 +191,7 @@ jobs:
 
       - name: Login to Azure
         if: ${{ matrix.os.base == 'mac' && needs.setup.outputs.has_secrets == 'true' }}
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -208,13 +208,13 @@ jobs:
       - name: Get Azure Key Vault secrets
         id: get-kv-secrets
         if: ${{ matrix.os.base == 'mac' && needs.setup.outputs.has_secrets == 'true' }}
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: gh-clients
           secrets: "APP-STORE-CONNECT-AUTH-KEY,APP-STORE-CONNECT-AUTH-ID,APP-STORE-CONNECT-TEAM-ISSUER"
 
       - name: Log out from Azure
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Set up keychain
         if: ${{ matrix.os.base == 'mac' && needs.setup.outputs.has_secrets == 'true' }}
@@ -411,7 +411,7 @@ jobs:
 
       - name: Log in to Azure
         if: ${{ needs.setup.outputs.has_secrets == 'true' }}
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -420,7 +420,7 @@ jobs:
       - name: Retrieve secrets
         id: retrieve-secrets
         if: ${{ needs.setup.outputs.has_secrets == 'true' }}
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: "bitwarden-ci"
           secrets: "code-signing-vault-url,
@@ -431,7 +431,7 @@ jobs:
 
       - name: Log out from Azure
         if: ${{ needs.setup.outputs.has_secrets == 'true' }}
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Install
         run: npm ci
@@ -444,7 +444,7 @@ jobs:
 
       - name: Download SDK Artifacts
         if: ${{ inputs.sdk_branch != '' && needs.setup.outputs.has_secrets == 'true' && matrix.license_type.type != 'commercial' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build-wasm-internal.yml
@@ -464,7 +464,7 @@ jobs:
 
       - name: Download Commercial SDK Artifacts
         if: ${{ inputs.sdk_branch != '' && needs.setup.outputs.has_secrets == 'true' && matrix.license_type.type == 'commercial' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build-wasm-internal.yml

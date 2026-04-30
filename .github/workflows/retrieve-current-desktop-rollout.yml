@@ -1,5 +1,7 @@
 name: Retrieve Current Desktop Rollout
 
+permissions: {}
+
 on:
   workflow_dispatch:
 
@@ -15,7 +17,7 @@ jobs:
       id-token: write
     steps:
       - name: Log in to Azure
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -23,7 +25,7 @@ jobs:
 
       - name: Retrieve secrets
         id: retrieve-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: "bitwarden-ci"
           secrets: "aws-electron-access-id,
@@ -31,7 +33,7 @@ jobs:
             aws-electron-bucket-name"
 
       - name: Log out from Azure
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Download channel update info files from S3
         env:

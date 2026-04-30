@@ -152,7 +152,7 @@ jobs:
       - name: Check secrets
         id: check-secrets
         run: |
-          has_secrets=${{ secrets.AZURE_CLIENT_ID != '' }}
+          has_secrets=${{ secrets.AZURE_CLIENT_ID != '' && !(github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository) }}
           echo "has_secrets=$has_secrets" >> "$GITHUB_OUTPUT"
 
   linux:
@@ -180,7 +180,7 @@ jobs:
           persist-credentials: false
 
       - name: Free disk space
-        uses: bitwarden/gh-actions/free-disk-space@main
+        uses: bitwarden/gh-actions/free-disk-space@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Set up Node
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
@@ -217,7 +217,7 @@ jobs:
 
       - name: Download SDK Artifacts
         if: ${{ inputs.sdk_branch != '' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build-wasm-internal.yml
@@ -380,7 +380,7 @@ jobs:
 
       - name: Download SDK Artifacts
         if: ${{ inputs.sdk_branch != '' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build-wasm-internal.yml
@@ -515,7 +515,7 @@ jobs:
 
       - name: Log in to Azure
         if: ${{ needs.setup.outputs.has_secrets == 'true' }}
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -524,7 +524,7 @@ jobs:
       - name: Retrieve secrets
         id: retrieve-secrets
         if: ${{ needs.setup.outputs.has_secrets == 'true' }}
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: "bitwarden-ci"
           secrets: "code-signing-vault-url,
@@ -535,7 +535,7 @@ jobs:
 
       - name: Log out from Azure
         if: ${{ needs.setup.outputs.has_secrets == 'true' }}
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Install Node dependencies
         run: npm ci
@@ -543,7 +543,7 @@ jobs:
 
       - name: Download SDK Artifacts
         if: ${{ inputs.sdk_branch != '' && needs.setup.outputs.has_secrets == 'true' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build-wasm-internal.yml
@@ -784,7 +784,7 @@ jobs:
 
       - name: Log in to Azure
         if: ${{ needs.setup.outputs.has_secrets == 'true' }}
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -793,7 +793,7 @@ jobs:
       - name: Retrieve secrets
         id: retrieve-secrets
         if: ${{ needs.setup.outputs.has_secrets == 'true' }}
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: "bitwarden-ci"
           secrets: "code-signing-vault-url,
@@ -804,7 +804,7 @@ jobs:
 
       - name: Log out from Azure
         if: ${{ needs.setup.outputs.has_secrets == 'true' }}
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Install Node dependencies
         run: npm ci
@@ -812,7 +812,7 @@ jobs:
 
       - name: Download SDK Artifacts
         if: ${{ inputs.sdk_branch != '' && needs.setup.outputs.has_secrets == 'true' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build-wasm-internal.yml
@@ -1054,7 +1054,7 @@ jobs:
 
       - name: Log in to Azure
         if: ${{ needs.setup.outputs.has_secrets == 'true' }}
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -1100,7 +1100,7 @@ jobs:
 
       - name: Log out from Azure
         if: ${{ needs.setup.outputs.has_secrets == 'true' }}
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Set up keychain
         if: ${{ needs.setup.outputs.has_secrets == 'true' }}
@@ -1160,7 +1160,7 @@ jobs:
 
       - name: Download SDK Artifacts
         if: ${{ inputs.sdk_branch != '' && needs.setup.outputs.has_secrets == 'true' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build-wasm-internal.yml
@@ -1279,7 +1279,7 @@ jobs:
           key: ${{ runner.os }}-${{ github.run_id }}-safari-extension
 
       - name: Log in to Azure
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -1287,7 +1287,7 @@ jobs:
 
       - name: Get Azure Key Vault secrets
         id: get-kv-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: gh-clients
           secrets: "APP-STORE-CONNECT-AUTH-KEY,APP-STORE-CONNECT-AUTH-ID,APP-STORE-CONNECT-TEAM-ISSUER"
@@ -1326,7 +1326,7 @@ jobs:
             jq -r .value | base64 -d > "$HOME/certificates/devid-installer-cert.p12"
 
       - name: Log out from Azure
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Set up keychain
         run: |
@@ -1375,7 +1375,7 @@ jobs:
 
       - name: Download SDK Artifacts
         if: ${{ inputs.sdk_branch != '' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build-wasm-internal.yml
@@ -1548,7 +1548,7 @@ jobs:
           key: ${{ runner.os }}-${{ github.run_id }}-safari-extension
 
       - name: Log in to Azure
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -1556,14 +1556,14 @@ jobs:
 
       - name: Get Azure Key Vault secrets
         id: get-kv-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: gh-clients
           secrets: "APP-STORE-CONNECT-AUTH-KEY,APP-STORE-CONNECT-AUTH-ID,APP-STORE-CONNECT-TEAM-ISSUER"
 
       - name: Retrieve Slack secret
         id: retrieve-slack-secret
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: bitwarden-ci
           secrets: "slack-webhook-alerts-deploy-qa"
@@ -1602,7 +1602,7 @@ jobs:
             jq -r .value | base64 -d > "$HOME/certificates/devid-installer-cert.p12"
 
       - name: Log out from Azure
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Set up keychain
         run: |
@@ -1652,7 +1652,7 @@ jobs:
 
       - name: Download SDK Artifacts
         if: ${{ inputs.sdk_branch != '' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build-wasm-internal.yml
@@ -1839,7 +1839,7 @@ jobs:
           persist-credentials: false
 
       - name: Log in to Azure
-        uses: bitwarden/gh-actions/azure-login@main
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -1847,13 +1847,13 @@ jobs:
 
       - name: Retrieve secrets
         id: retrieve-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: "bitwarden-ci"
           secrets: "crowdin-api-token"
 
       - name: Log out from Azure
-        uses: bitwarden/gh-actions/azure-logout@main
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       - name: Upload Sources
         uses: crowdin/github-action@8818ff65bfc4322384f983ea37e3926948c11745 # v2.15.0
@@ -1884,7 +1884,7 @@ jobs:
           persist-credentials: false
 
       - name: Download deb artifact
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           run_id: ${{ github.run_id }}
           path: apps/desktop/artifacts/linux/deb
@@ -1928,7 +1928,7 @@ jobs:
           persist-credentials: false
 
       - name: Download appimage artifact
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           run_id: ${{ github.run_id }}
           path: apps/desktop/artifacts/linux/appimage
@@ -1970,7 +1970,7 @@ jobs:
           persist-credentials: false
 
       - name: Download appimage artifact
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           run_id: ${{ github.run_id }}
           path: apps/desktop/artifacts/linux/appimage
@@ -2026,7 +2026,7 @@ jobs:
           persist-credentials: false
 
       - name: Download flatpak artifact
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           run_id: ${{ github.run_id }}
           path: apps/desktop/artifacts/linux/flatpak/
@@ -2079,7 +2079,7 @@ jobs:
           persist-credentials: false
 
       - name: Download snap artifact
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           run_id: ${{ github.run_id }}
           path: apps/desktop/artifacts/linux/snap
@@ -2124,7 +2124,7 @@ jobs:
           persist-credentials: false
 
       - name: Download dmg artifact
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           run_id: ${{ github.run_id }}
           path: apps/desktop/artifacts/macos/dmg
@@ -2169,7 +2169,7 @@ jobs:
           persist-credentials: false
 
       - name: Download portable artifact
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: bitwarden/gh-actions/download-artifacts@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           run_id: ${{ github.run_id }}
           path: apps/desktop/artifacts/windows/portable

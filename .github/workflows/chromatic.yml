@@ -88,30 +88,40 @@ jobs:
         if: steps.get-changed-files.outputs.storyFiles == 'true'
         run: npm ci
 
+      - name: Check secrets
+        id: check-secrets
+        run: |
+          has_secrets=${{ secrets.AZURE_CLIENT_ID != '' && !(github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository) }}
+          echo "has_secrets=$has_secrets" >> "$GITHUB_OUTPUT"
+
       - name: Log in to Azure
-        uses: bitwarden/gh-actions/azure-login@main
+        if: steps.get-changed-files.outputs.storyFiles == 'true' && steps.check-secrets.outputs.has_secrets == 'true'
+        uses: bitwarden/gh-actions/azure-login@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           client_id: ${{ secrets.AZURE_CLIENT_ID }}
-  
+
       - name: Get Azure Key Vault secrets
         id: get-kv-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        if: steps.get-changed-files.outputs.storyFiles == 'true' && steps.check-secrets.outputs.has_secrets == 'true'
+        uses: bitwarden/gh-actions/get-keyvault-secrets@bf687f1106a40cc778516d5fe23a5df7b283baf2
         with:
           keyvault: gh-clients
           secrets: "CHROMATIC-PROJECT-TOKEN,CHROMATIC-PROJECT-TOKEN-AUTOFILL"
-  
+
       - name: Log out from Azure
-        uses: bitwarden/gh-actions/azure-logout@main
+        if: steps.get-changed-files.outputs.storyFiles == 'true' && steps.check-secrets.outputs.has_secrets == 'true'
+        uses: bitwarden/gh-actions/azure-logout@bf687f1106a40cc778516d5fe23a5df7b283baf2
 
       # Manually build the Storybook to resolve a bug related to TurboSnap
       - name: Build Autofill Storybook
-        if: steps.get-changed-files.outputs.storyFiles == 'true'
+        if: steps.get-changed-files.outputs.storyFiles == 'true' && steps.check-secrets.outputs.has_secrets == 'true'
         run: npm run build-storybook:autofill:ci
 
       - name: Publish to Chromatic for Autofill
         id: publish-chromatic-autofill
+        if: steps.get-changed-files.outputs.storyFiles == 'true' && steps.check-secrets.outputs.has_secrets == 'true'
         uses: chromaui/action@07791f8243f4cb2698bf4d00426baf4b2d1cb7e0 # v13.3.5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -125,12 +135,13 @@ jobs:
 
       # Manually build the Storybook to resolve a bug related to TurboSnap
       - name: Build CL Storybook
-        if: steps.get-changed-files.outputs.storyFiles == 'true'
+        if: steps.get-changed-files.outputs.storyFiles == 'true' && steps.check-secrets.outputs.has_secrets == 'true'
         env:
           AUTOFILL_CHROMATIC_URL: ${{ steps.publish-chromatic-autofill.outputs.storybookUrl }}
         run: npm run build-storybook:ci
 
       - name: Publish to Chromatic for CL
+        if: steps.get-changed-files.outputs.storyFiles == 'true' && steps.check-secrets.outputs.has_secrets == 'true'
         uses: chromaui/action@07791f8243f4cb2698bf4d00426baf4b2d1cb7e0 # v13.3.5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
