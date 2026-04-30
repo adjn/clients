@@ -9,7 +9,6 @@ jobs:
     name: 'Check for stale issues and PRs'
     runs-on: ubuntu-22.04
     permissions:
-      actions: write
       contents: read
       issues: write
       pull-requests: write
