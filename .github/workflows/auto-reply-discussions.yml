@@ -68,14 +68,14 @@ jobs:
 
             async function closeDiscussion(discussionId) {
               await github.graphql(`
-                mutation {
-                  closeDiscussion(input: {discussionId: "${discussionId}"}) {
+                mutation($discussionId: ID!) {
+                  closeDiscussion(input: {discussionId: $discussionId}) {
                     discussion {
                       id
                     }
                   }
                 }
-              `);
+              `, { discussionId });
               console.log('♻️ Closing discussion');
             }
 
