@@ -1,5 +1,7 @@
 name: Retrieve Current Desktop Rollout
 
+permissions: {}
+
 on:
   workflow_dispatch:
 

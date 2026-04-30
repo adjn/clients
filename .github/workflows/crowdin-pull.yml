@@ -1,5 +1,7 @@
 name: Crowdin Sync
 
+permissions: {}
+
 on:
   workflow_dispatch:
     inputs: {}

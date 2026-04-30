@@ -1,5 +1,7 @@
 name: DDG File Change Monitor
 
+permissions: {}
+
 on:
   pull_request:
     branches: [ main ]
