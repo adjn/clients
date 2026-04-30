@@ -1,6 +1,8 @@
 name: Publish Web
 run-name: Publish Web ${{ inputs.publish_type }}
 
+permissions: {}
+
 on:
   workflow_dispatch:
     inputs:

@@ -1,5 +1,7 @@
 name: Lint Crowdin Config
 
+permissions: {}
+
 on:
   pull_request:
     types: [opened, synchronize]

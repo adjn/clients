@@ -1,6 +1,8 @@
 name: Staged Rollout Desktop
 run-name: Staged Rollout Desktop - ${{ inputs.rollout_percentage }}%
 
+permissions: {}
+
 on:
   workflow_dispatch:
     inputs:

@@ -1,4 +1,7 @@
 name: 'Close stale issues and PRs'
+
+permissions: {}
+
 on:
   workflow_dispatch:
   schedule:   # Run once a day at 5.23am (arbitrary but should avoid peak loads on the hour)

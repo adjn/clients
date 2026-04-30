@@ -1,6 +1,8 @@
 name: Release Web
 run-name: Release Web ${{ inputs.release_type }}
 
+permissions: {}
+
 on:
   workflow_dispatch:
     inputs:

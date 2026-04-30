@@ -1,6 +1,8 @@
 name: Autofill BIT checks
 run-name: Autofill BIT checks on ${{ github.event.workflow_run.head_branch }} build
 
+permissions: {}
+
 on:
   workflow_run:
     workflows: ["Build Browser"]
